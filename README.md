@@ -1,8 +1,23 @@
-# Banjo: Recompiled for Android
+# 📱 Banjo: Recompiled — Community Android & Handheld Port
 
-**Banjo-Kazooie, recompiled for Android handhelds. With the full Banjo: Recompiled feature set, controller support, and dual screen support.**
+<p align="center">
+  <a href="https://github.com/dmillerzx/BanjoRecomp-Android/releases/latest">
+    <img src="https://img.shields.io/github/v/release/dmillerzx/BanjoRecomp-Android?label=Latest%20Android%20APK&amp;color=brightgreen&amp;style=for-the-badge" alt="Latest Android APK">
+  </a>
+  <a href="https://github.com/dmillerzx/BanjoRecomp-Android/releases">
+    <img src="https://img.shields.io/badge/Platform-Android%20arm64--v8a-blue?style=for-the-badge&amp;logo=android" alt="Platform: Android arm64-v8a">
+  </a>
+  <a href="https://github.com/dmillerzx/BanjoRecomp-Android/issues">
+    <img src="https://img.shields.io/github/issues/dmillerzx/BanjoRecomp-Android?style=for-the-badge&amp;color=orange" alt="GitHub Issues">
+  </a>
+</p>
 
-> This repository and its releases do not contain game assets. You must provide your own supported Banjo-Kazooie ROM to build or run the project.
+> [!NOTE]
+> **Community Handheld Fork Notice**: This repository is a community-driven fork maintained by [dmillerzx](https://github.com/dmillerzx) focused on physical Android gaming handhelds — actively maintained and verified on the **Retroid Pocket 5** (Qualcomm Snapdragon 865, Adreno 650, Android 13) and generic AArch64 devices.
+>
+> * Upstream Android port by [@AurelioB](https://github.com/AurelioB/BanjoRecomp-Android) (originally developed and tested on the AYN Thor dual-screen handheld).
+> * Desktop releases and core recompilation by [N64: Recompiled](https://github.com/N64Recomp/N64Recomp).
+> * **No Game Assets**: This repository and its releases do not contain game assets or ROMs. You must provide an authentic **Banjo-Kazooie (USA) v1.0** ROM (`.z64`).
 
 
 ## Features
@@ -14,9 +29,15 @@
 - Modern quality of life features such as note saving.
 - Full mod support, including local mod and texture-pack import.
 
-### Full controller support
+### Full controller & handheld hardware support
 
-Designed with Android handhelds in mind. Tested on the AYN Thor.
+- **Primary Test Device**: Actively maintained and verified on the **Retroid Pocket 5 (RP5)** (Qualcomm Snapdragon 865 / Adreno 650, Android 13) at native 1080p, locked 60 FPS in 16:9 widescreen presentation.
+- **Physical Controls**: Tuned controller mapping including modern dual-trigger crouch multi-bind (`ZL` + `L1`).
+- **Adreno 650 / Snapdragon 865 Crash Guard**: Null-pipeline SPIR-V guard preventing driver `SIGSEGV` faults on Qualcomm devices.
+- **Turnip GPU Driver Loader**: Built-in AdrenoTools driver loader supporting Mesa Turnip drivers (e.g. Turnip v24.3.0 R9v2) for enhanced Vulkan stability.
+- **Zero-Touch ROM Hydration**: Automatically searches `/storage/*/ROMs/n64/` and app files on launch, extracting `.zip` archives and verifying ROM headers so the game is ready to play immediately.
+- **Header Inspection Dialog**: Detects unsupported revisions (e.g. Rev A / v1.1) and displays a clear explanation dialog rather than failing silently.
+- *(Note: Upstream project was originally developed and tested on the dual-screen AYN Thor).*
 
 ### Android save management
 

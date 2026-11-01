@@ -142,7 +142,7 @@ adb logcat -d | grep -E 'BanjoGpuDriver|BanjoVkSmoke|Adreno|Turnip|Vulkan|Device
 
 Default/release APKs should contain app support libraries only; they must not contain user-provided Turnip/custom-driver packages. Verify with the APK scan in the cleanup notes before distributing a build.
 
-The custom-loader directory is normalized before it is passed to AdrenoTools; this fixes the earlier missing-separator failure that produced a concatenated `arm64-v8alibvulkan...` path. Source tests and an offline arm64 APK build verify the integration, but a successful launch, swapchain presentation, and gameplay session with Turnip on a real arm64 Adreno device are still required. There is currently no **Remove Installed Driver** action: **Reset to System Driver** only clears the active selection and preserves imports.
+The custom-loader directory is normalized before it is passed to AdrenoTools; this fixes the earlier missing-separator failure that produced a concatenated `arm64-v8alibvulkan...` path. Verified on hardware: Tested on the Retroid Pocket 5 (Qualcomm Snapdragon 865 / Adreno 650, Android 13). Both Mesa Turnip drivers (Turnip v24.3.0 R9v2, TurnipZ 0.3.0) and stock Qualcomm drivers launch cleanly, establish swapchain presentation, and run at a locked 60 FPS in 16:9 widescreen. There is currently no **Remove Installed Driver** action: **Reset to System Driver** only clears the active selection and preserves imports.
 
 ## Save Management
 
