@@ -23,7 +23,9 @@
 > * **No Game Assets**: This repository and its releases do not contain game assets or ROMs. You must provide an authentic **Banjo-Kazooie (USA) v1.0** ROM (`.z64`).
 
 
-![Banjo Recompiled running at 1080p 16:9 on Retroid Pocket 5](docs/assets/android-rp5/title.png)
+| Title Screen (1080p 16:9 on RP5) | In-Game 16:9 Widescreen |
+| :---: | :---: |
+| ![Banjo Recompiled title screen on Retroid Pocket 5](docs/assets/android-rp5/title.png) | ![Banjo Recompiled in-game widescreen](docs/assets/android-dual-screen/mumbos-mountain-primary.png) |
 
 ## Features
 
