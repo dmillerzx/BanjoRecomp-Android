@@ -13,10 +13,11 @@
 </p>
 
 > [!NOTE]
-> **Community Handheld Fork Notice**: This repository is a community-driven fork maintained by [dmillerzx](https://github.com/dmillerzx) focused on physical Android gaming handhelds — actively maintained and verified on the **Retroid Pocket 5** (Qualcomm Snapdragon 865, Adreno 650, Android 13) and generic AArch64 devices.
+> **Native Android-Only Fork**: This repository is a community-driven fork maintained by [dmillerzx](https://github.com/dmillerzx) dedicated **exclusively to native Android (`arm64-v8a`) handheld releases** — actively maintained and verified on the **Retroid Pocket 5** (Qualcomm Snapdragon 865, Adreno 650, Android 13) and generic AArch64 handhelds.
 >
-> * Upstream Android port by [@AurelioB](https://github.com/AurelioB/BanjoRecomp-Android) (originally developed and tested on the AYN Thor dual-screen handheld).
-> * Desktop releases and core recompilation by [N64: Recompiled](https://github.com/N64Recomp/N64Recomp).
+> * **Android Releases Only**: We do **not** publish Windows, Linux, or macOS releases from this repository. Desktop releases and core recompilation live upstream at [N64Recomp/N64Recomp](https://github.com/N64Recomp/N64Recomp) / [BanjoRecomp/BanjoRecomp](https://github.com/BanjoRecomp/BanjoRecomp).
+> * **Handheld-Specific Optimizations**: All downstream optimizations (Adreno 650 RT64 crash guard, Turnip GPU driver loader, ZL+L1 crouch multi-bind, zero-touch `/storage/*/ROMs/n64/` ZIP hydration, and Rev A header diagnostics) are built specifically for the Android handheld environment.
+> * Upstream Android port by [@AurelioB](https://github.com/AurelioB/BanjoRecomp-Android).
 > * **No Game Assets**: This repository and its releases do not contain game assets or ROMs. You must provide an authentic **Banjo-Kazooie (USA) v1.0** ROM (`.z64`).
 
 
