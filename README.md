@@ -36,7 +36,7 @@
 - **Physical Controls**: Tuned controller mapping including modern dual-trigger crouch multi-bind (`ZL` + `L1`).
 - **Adreno 650 / Snapdragon 865 Crash Guard**: Null-pipeline SPIR-V guard preventing driver `SIGSEGV` faults on Qualcomm devices.
 - **Turnip GPU Driver Loader**: Built-in AdrenoTools driver loader supporting Mesa Turnip drivers (e.g. Turnip v24.3.0 R9v2) for enhanced Vulkan stability.
-- **Zero-Touch ROM Hydration**: Automatically searches `/storage/*/ROMs/n64/` and app files on launch, extracting `.zip` archives and verifying ROM headers so the game is ready to play immediately.
+- **ROM Setup (Auto-Scan or In-App Picker)**: You can **either** place your **Banjo-Kazooie (USA) v1.0** `.z64` (or `.zip`) in `<MicroSD>/ROMs/n64/` or `/sdcard/ROMs/n64/` for automatic zero-touch hydration on launch, **or** select it manually via the **in-app Android file picker** on first launch.
 - **Header Inspection Dialog**: Detects unsupported revisions (e.g. Rev A / v1.1) and displays a clear explanation dialog rather than failing silently.
 - *(Note: Upstream project was originally developed and tested on the dual-screen AYN Thor).*
 
