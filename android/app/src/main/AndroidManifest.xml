@@ -13,7 +13,7 @@
             android:hardwareAccelerated="true"
             android:label="Banjo Recompiled"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/BanjoTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
