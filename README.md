@@ -27,6 +27,16 @@
 | :---: | :---: |
 | ![Banjo Recompiled title screen on Retroid Pocket 5](docs/assets/android-rp5/title.png) | ![Banjo Recompiled in-game widescreen](docs/assets/android-dual-screen/mumbos-mountain-primary.png) |
 
+### What Makes This Android Fork Different
+
+| Feature | Android Handheld Implementation |
+| :--- | :--- |
+| **Adreno 650 / RT64 Crash Guard** | Fixes Qualcomm Adreno 650 startup crashes and prevents null-`VkPipeline` driver `SIGSEGV` faults |
+| **Turnip GPU Driver Loader** | Built-in AdrenoTools driver loader with `meta.json` extraction (supports Mesa Turnip v24.3.0 R9v2) |
+| **Zero-Touch ROM Hydration** | Auto-scans `/storage/*/ROMs/n64/` (extracting `.zip` archives) or imports via in-app Android file picker |
+| **Rev A Header Diagnostics** | Detects unsupported ROM revisions (e.g. Rev A / v1.1) with a clear dialog instead of failing silently |
+| **Handheld Controls & Display** | `ZL` + `L1` crouch multi-bind, `WindowInsetsController` immersive mode, and `sensorLandscape` orientation |
+
 ## Features
 
 ### Feature complete with the PC version
