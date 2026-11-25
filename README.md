@@ -7,6 +7,8 @@
   <a href="https://github.com/dmillerzx/BanjoRecomp-Android/releases">
     <img src="https://img.shields.io/badge/Platform-Android%20arm64--v8a-blue?style=for-the-badge&amp;logo=android" alt="Platform: Android arm64-v8a">
   </a>
+  <img src="https://img.shields.io/badge/Graphics-Vulkan%201080p%2060FPS-red?style=for-the-badge&amp;logo=vulkan" alt="Vulkan 1080p 60FPS">
+  <img src="https://img.shields.io/badge/Updates-Obtainium%20Ready-purple?style=for-the-badge" alt="Obtainium Ready">
   <a href="https://github.com/dmillerzx/BanjoRecomp-Android/issues">
     <img src="https://img.shields.io/github/issues/dmillerzx/BanjoRecomp-Android?style=for-the-badge&amp;color=orange" alt="GitHub Issues">
   </a>
@@ -20,6 +22,8 @@
 > * Upstream Android port by [@AurelioB](https://github.com/AurelioB/BanjoRecomp-Android).
 > * **No Game Assets**: This repository and its releases do not contain game assets or ROMs. You must provide an authentic **Banjo-Kazooie (USA) v1.0** ROM (`.z64`).
 
+
+![Banjo Recompiled running at 1080p 16:9 on Retroid Pocket 5](docs/assets/android-rp5/title.png)
 
 ## Features
 
