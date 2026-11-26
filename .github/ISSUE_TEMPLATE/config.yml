@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Setup Help, Device Compatibility & Q&A
+    url: https://github.com/dmillerzx/BanjoRecomp-Android/discussions
+    about: Ask setup questions, share handheld test results (Odin 2, RP4P, RP5, etc.), or discuss Turnip drivers.
