@@ -1,0 +1,36 @@
+name: Android Bug Report / Compatibility Issue
+description: Report a crash, rendering bug, or device-specific compatibility issue on Android.
+title: "[Bug]: "
+body:
+  - type: input
+    id: device
+    attributes:
+      label: Device & SoC / GPU
+      placeholder: e.g. Retroid Pocket 5 (Snapdragon 865 / Adreno 650) or AYN Odin 2 (SD8 Gen 2)
+    validations:
+      required: true
+  - type: input
+    id: android_version
+    attributes:
+      label: Android Version & Release Tag
+      placeholder: e.g. Android 13, release v1.0.6-preview
+    validations:
+      required: true
+  - type: input
+    id: gpu_driver
+    attributes:
+      label: GPU Driver (if applicable)
+      placeholder: e.g. Stock Adreno, Mesa Turnip v24.3.0, or N/A (OpenGL ES)
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Clear description of the bug, reproduction steps, and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logcat / Crash Output (optional)
+      description: Paste relevant adb logcat lines if available.
+      render: shell
