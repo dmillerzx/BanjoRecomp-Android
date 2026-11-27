@@ -41,6 +41,7 @@
 #if defined(__ANDROID__)
 #include <android/log.h>
 #include <jni.h>
+#include <unistd.h>
 #include <SDL_events.h>
 #include "../android/save_storage_manager.hpp"
 #endif
@@ -1014,6 +1015,17 @@ int banjo_recomp_main(int argc, char** argv) {
     (void)argv;
 
 #if defined(__ANDROID__)
+    if (const char* log_path = getenv("APP_LOG_PATH")) {
+        if (*log_path) {
+            FILE* f_out = freopen(log_path, "a", stdout);
+            if (f_out != nullptr) {
+                dup2(fileno(f_out), fileno(stderr));
+                setvbuf(stdout, nullptr, _IONBF, 0);
+                setvbuf(stderr, nullptr, _IONBF, 0);
+                fprintf(stderr, "[BanjoRecomp] Native log attached to %s\n", log_path);
+            }
+        }
+    }
     if (const char* program_path = getenv("APP_PROGRAM_PATH")) {
         std::error_code ec;
         std::filesystem::current_path(program_path, ec);

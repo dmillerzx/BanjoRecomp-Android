@@ -36,6 +36,10 @@ android {
 
     defaultConfig {
         applicationId 'com.aure.banjorecomp'
+        def banjoAppIdSuffix = (project.findProperty('banjoApplicationIdSuffix') ?: '').toString()
+        if (banjoAppIdSuffix) {
+            applicationIdSuffix banjoAppIdSuffix
+        }
         minSdk 24
         targetSdk 36
         versionCode banjoVersionCode

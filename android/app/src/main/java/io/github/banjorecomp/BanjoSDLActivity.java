@@ -107,6 +107,10 @@ public class BanjoSDLActivity extends SDLActivity {
         File gpuDriverRoot = new File(getFilesDir(), GPU_DRIVER_ROOT_DIR);
         File gpuDriverTmp = new File(gpuDriverRoot, GPU_DRIVER_TMP_DIR);
 
+        File logFile = getExternalLogFile();
+        resetLogFile(logFile);
+        appendLogLine("BanjoRecomp Android startup");
+
         hydrateInternalSaveFromSelectedFolder(appDataDir);
         hydrateInternalGpuDriverFromExternalFolder(gpuDriverRoot);
         hydrateInternalRomFromCommonLocations(appDataDir);
@@ -115,6 +119,7 @@ public class BanjoSDLActivity extends SDLActivity {
             extractProgramAssetsIfNeeded(programDir);
         } catch (IOException e) {
             Log.e(TAG, "Failed to copy program assets", e);
+            appendLogLine("Failed to copy program assets: " + e.getMessage());
         }
 
         super.onCreate(savedInstanceState);
@@ -122,6 +127,7 @@ public class BanjoSDLActivity extends SDLActivity {
         dualScreenStatsManager = new DualScreenStatsManager(this);
         dualScreenStatsManager.start();
 
+        nativeSetenv("APP_LOG_PATH", logFile.getAbsolutePath());
         nativeSetenv("APP_PROGRAM_PATH", programDir.getAbsolutePath());
         nativeSetenv("APP_FOLDER_PATH", appDataDir.getAbsolutePath());
         setupGpuDriverEnvironment(gpuDriverRoot, gpuDriverTmp, getIntent());
@@ -528,18 +534,47 @@ public class BanjoSDLActivity extends SDLActivity {
         }
 
         if (requestCode == REQUEST_SELECT_ROM) {
-            String importedPath = null;
-            if (resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-                File importedRom = copySelectedRom(data.getData());
-                if (importedRom != null) {
-                    importedPath = importedRom.getAbsolutePath();
-                    inspectSelectedRomVersion(importedRom);
-                    if (dualScreenStatsManager != null) {
-                        dualScreenStatsManager.loadThemeFromRom(importedRom);
-                    }
-                }
+            if (resultCode != Activity.RESULT_OK || data == null || data.getData() == null) {
+                nativeOnRomSelected(null);
+                return;
             }
-            nativeOnRomSelected(importedPath);
+            final Uri romUri = data.getData();
+            saveIoExecutor.execute(() -> {
+                String errorMessage = null;
+                File importedRom = null;
+                try {
+                    importedRom = copySelectedRom(romUri);
+                    if (importedRom == null) {
+                        errorMessage = "Could not import the selected file. If you chose a .zip archive, ensure it contains an uncompressed .z64, .n64, or .v64 Banjo-Kazooie (USA) v1.0 ROM.";
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to import selected ROM", e);
+                    errorMessage = "Failed to read the selected ROM: " + e.getMessage();
+                }
+
+                if (importedRom == null) {
+                    final String dialogMsg = errorMessage;
+                    appendLogLine("ROM selection failed: " + dialogMsg);
+                    runOnUiThread(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            new AlertDialog.Builder(this)
+                                    .setTitle("Invalid ROM Selection")
+                                    .setMessage(dialogMsg)
+                                    .setPositiveButton("OK", null)
+                                    .show();
+                        }
+                    });
+                    nativeOnRomSelected(null);
+                    return;
+                }
+
+                inspectSelectedRomVersion(importedRom);
+                if (dualScreenStatsManager != null) {
+                    dualScreenStatsManager.loadThemeFromRom(importedRom);
+                }
+                appendLogLine("ROM selected for validation: " + importedRom.getAbsolutePath());
+                nativeOnRomSelected(importedRom.getAbsolutePath());
+            });
             return;
         }
 
@@ -823,6 +858,11 @@ public class BanjoSDLActivity extends SDLActivity {
 
             // 1. App external files dir: /sdcard/Android/data/com.aure.banjorecomp/files/
             File externalFiles = getExternalFilesDir(null);
+            if (externalFiles != null && new File(externalFiles, ".isolated_test").exists()) {
+                Log.i(TAG, "Isolation marker present; skipping external ROM auto-hydration");
+                appendLogLine("Isolation marker present; skipping external ROM auto-hydration");
+                return;
+            }
             if (externalFiles != null && externalFiles.isDirectory()) {
                 candidates.add(new File(externalFiles, "banjo.z64"));
                 candidates.add(new File(externalFiles, "baserom.us.z64"));
@@ -888,25 +928,67 @@ public class BanjoSDLActivity extends SDLActivity {
     private void inspectSelectedRomVersion(File file) {
         if (!file.isFile() || file.length() < 64) return;
         try (RandomAccessFile raf = new RandomAccessFile(file, "r")) {
-            raf.seek(0x3B);
-            byte[] h = new byte[5];
-            raf.readFully(h);
-            if (h[0] == 'N' && h[1] == 'B' && h[2] == 'K' && h[3] == 'E') {
-                int ver = h[4] & 0xFF;
+            byte[] fullHeader = new byte[64];
+            raf.readFully(fullHeader);
+            // Normalize .v64 (byte-swapped) and .n64 (little-endian) to big-endian .z64 for header check.
+            if ((fullHeader[0] & 0xFF) == 0x37 && (fullHeader[1] & 0xFF) == 0x80) {
+                for (int i = 0; i + 1 < fullHeader.length; i += 2) {
+                    byte tmp = fullHeader[i];
+                    fullHeader[i] = fullHeader[i + 1];
+                    fullHeader[i + 1] = tmp;
+                }
+            } else if ((fullHeader[0] & 0xFF) == 0x40 && (fullHeader[1] & 0xFF) == 0x12) {
+                for (int i = 0; i + 3 < fullHeader.length; i += 4) {
+                    byte b0 = fullHeader[i], b1 = fullHeader[i + 1], b2 = fullHeader[i + 2], b3 = fullHeader[i + 3];
+                    fullHeader[i] = b3; fullHeader[i + 1] = b2; fullHeader[i + 2] = b1; fullHeader[i + 3] = b0;
+                }
+            }
+            if (fullHeader[0x3B] == 'N' && fullHeader[0x3C] == 'B' && fullHeader[0x3D] == 'K' && fullHeader[0x3E] == 'E') {
+                int ver = fullHeader[0x3F] & 0xFF;
                 if (ver != 0) {
                     String verName = ver == 1 ? "Revision A (v1.1)" : (ver == 2 ? "Revision B (v1.2)" : ("Version 0x" + Integer.toHexString(ver)));
+                    appendLogLine("Rejected unsupported Banjo ROM revision: " + verName);
                     runOnUiThread(() -> {
-                        new AlertDialog.Builder(this)
-                                .setTitle("Unsupported ROM Version")
-                                .setMessage("The selected ROM is Banjo-Kazooie " + verName + ".\n\nBanjo Recompiled requires the authentic NTSC-U v1.0 (Rev 0) ROM.\n\nPlease select 'Banjo-Kazooie (USA).z64'.")
-                                .setPositiveButton("OK", null)
-                                .show();
+                        if (!isFinishing() && !isDestroyed()) {
+                            new AlertDialog.Builder(this)
+                                    .setTitle("Unsupported ROM Version")
+                                    .setMessage("The selected ROM is Banjo-Kazooie " + verName + ".\n\nBanjo Recompiled requires the authentic NTSC-U v1.0 (Rev 0) ROM.\n\nPlease select 'Banjo-Kazooie (USA).z64'.")
+                                    .setPositiveButton("OK", null)
+                                    .show();
+                        }
                     });
                 }
             }
         } catch (Exception e) {
             Log.w(TAG, "Failed to inspect selected ROM header", e);
         }
+    }
+
+    private File getExternalLogFile() {
+        File ext = getExternalFilesDir(null);
+        File base = ext != null ? ext : getFilesDir();
+        return new File(base, "banjo.log");
+    }
+
+    private void resetLogFile(File logFile) {
+        try {
+            File parent = logFile.getParentFile();
+            if (parent != null && !parent.exists()) parent.mkdirs();
+            try (FileOutputStream out = new FileOutputStream(logFile, false)) {
+                out.write(new byte[0]);
+            }
+        } catch (IOException ignored) { }
+    }
+
+    private void appendLogLine(String message) {
+        try {
+            File logFile = getExternalLogFile();
+            File parent = logFile.getParentFile();
+            if (parent != null && !parent.exists()) parent.mkdirs();
+            try (FileOutputStream out = new FileOutputStream(logFile, true)) {
+                out.write(("[Java] " + message + "\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            }
+        } catch (IOException ignored) { }
     }
 
     private void copyUriToFile(Uri uri, File file) throws IOException {
@@ -950,13 +1032,20 @@ public class BanjoSDLActivity extends SDLActivity {
         }
 
         File importDir = new File(getCacheDir(), "rom-imports");
+        if (importDir.isDirectory()) {
+            File[] stale = importDir.listFiles();
+            if (stale != null) {
+                for (File f : stale) f.delete();
+            }
+        }
         File importedFile = copyDocumentToCache(uri, importDir, sanitizeFilename(displayName), "selected ROM");
         if (importedFile == null) {
             return null;
         }
 
-        File extractedRom = extractRomIfCompressed(importedFile, importDir);
-        if (extractedRom != null) {
+        boolean isZip = isZipFile(importedFile);
+        if (isZip) {
+            File extractedRom = extractRomIfCompressed(importedFile, importDir);
             if (importedFile.exists() && !importedFile.equals(extractedRom)) {
                 importedFile.delete();
             }
@@ -964,6 +1053,19 @@ public class BanjoSDLActivity extends SDLActivity {
         }
 
         return importedFile;
+    }
+
+    private static boolean isZipFile(File file) {
+        if (file.getName().toLowerCase(java.util.Locale.US).endsWith(".zip")) {
+            return true;
+        }
+        try (FileInputStream fis = new FileInputStream(file)) {
+            byte[] header = new byte[4];
+            int count = fis.read(header);
+            return count == 4 && header[0] == 0x50 && header[1] == 0x4B && header[2] == 0x03 && header[3] == 0x04;
+        } catch (IOException ignored) {
+            return false;
+        }
     }
 
     private File extractRomIfCompressed(File file, File importDir) {

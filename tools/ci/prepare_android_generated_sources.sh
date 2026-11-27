@@ -120,6 +120,11 @@ apply_recompui_patch() {
     echo "Applying modern defaults patch to recompui..."
     git -C "${PWD}/lib/RecompFrontend" apply --ignore-whitespace "$patch_file" || true
   fi
+  local msg_patch="${PWD}/android/patches/0003-recompui-android-message-box.patch"
+  if [[ -f "$msg_patch" ]]; then
+    echo "Applying Android message_box patch to recompui..."
+    git -C "${PWD}/lib/RecompFrontend" apply --ignore-whitespace "$msg_patch" || true
+  fi
 }
 
 apply_adreno_plume_patch

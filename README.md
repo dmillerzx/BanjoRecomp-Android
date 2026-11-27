@@ -33,8 +33,8 @@
 | :--- | :--- |
 | **Adreno 650 / RT64 Crash Guard** | Fixes Qualcomm Adreno 650 startup crashes and prevents null-`VkPipeline` driver `SIGSEGV` faults |
 | **Turnip GPU Driver Loader** | Built-in AdrenoTools driver loader with `meta.json` extraction (supports Mesa Turnip v24.3.0 R9v2) |
-| **Zero-Touch ROM Hydration** | Auto-scans `/storage/*/ROMs/n64/` (extracting `.zip` archives) or imports via in-app Android file picker |
-| **Rev A Header Diagnostics** | Detects unsupported ROM revisions (e.g. Rev A / v1.1) with a clear dialog instead of failing silently |
+| **Zero-Touch ROM Hydration** | Auto-scans `/storage/*/ROMs/n64/` for `Banjo-Kazooie (USA).z64` / `banjo.z64` (when storage is readable) or imports `.z64/.n64/.v64/.zip` via in-app Android file picker |
+| **ROM & Log Diagnostics** | Detects unsupported ROM revisions/corrupt files with on-screen dialogs and writes persistent boot logs to `Android/data/com.aure.banjorecomp/files/banjo.log` |
 | **Handheld Controls & Display** | `ZL` + `L1` crouch multi-bind, `WindowInsetsController` immersive mode, and `sensorLandscape` orientation |
 
 ## Features
@@ -52,8 +52,8 @@
 - **Physical Controls**: Tuned controller mapping including modern dual-trigger crouch multi-bind (`ZL` + `L1`).
 - **Adreno 650 / Snapdragon 865 Crash Guard**: Null-pipeline SPIR-V guard preventing driver `SIGSEGV` faults on Qualcomm devices.
 - **Turnip GPU Driver Loader**: Built-in AdrenoTools driver loader supporting Mesa Turnip drivers (e.g. Turnip v24.3.0 R9v2) for enhanced Vulkan stability.
-- **ROM Setup (Auto-Scan or In-App Picker)**: You can **either** place your **Banjo-Kazooie (USA) v1.0** `.z64` (or `.zip`) in `<MicroSD>/ROMs/n64/` or `/sdcard/ROMs/n64/` for automatic zero-touch hydration on launch, **or** select it manually via the **in-app Android file picker** on first launch.
-- **Header Inspection Dialog**: Detects unsupported revisions (e.g. Rev A / v1.1) and displays a clear explanation dialog rather than failing silently.
+- **ROM Setup (Auto-Scan or In-App Picker)**: You can **either** place your **Banjo-Kazooie (USA) v1.0** `.z64` (`Banjo-Kazooie (USA).z64` or `banjo.z64`) in `<MicroSD>/ROMs/n64/` or `Android/data/com.aure.banjorecomp/files/` for automatic zero-touch hydration on launch, **or** select any `.z64`, `.n64`, `.v64`, or `.zip` manually via the **in-app Android file picker** on first launch.
+- **Diagnostics & Logs**: Boot, ROM validation, and GPU driver logs are written to `Android/data/com.aure.banjorecomp/files/banjo.log`. Unsupported revisions (e.g. Rev A / v1.1) and invalid files display a clear explanation dialog rather than failing silently.
 - *(Note: Upstream project was originally developed and tested on the dual-screen AYN Thor).*
 
 ### Android save management

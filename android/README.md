@@ -60,7 +60,8 @@ Android runtime paths are intentionally app-private:
 
 - Java extracts packaged runtime assets from APK `assets/program/` to `files/program/` and sets `APP_PROGRAM_PATH` to that directory before native startup.
 - Java sets `APP_FOLDER_PATH` to `files/data/`; RecompFrontend uses that as the root for config, mods, imported ROMs, and saves instead of desktop `$HOME/.config` paths.
-- ROM picker imports are copied under `files/data/roms/`.
+- ROM picker imports are staged transiently under `cache/rom-imports/` and validated/copied by `librecomp` to `files/data/bk.n64.us.1.0.z64`.
+- Boot, ROM validation, and native diagnostics are logged to `Android/data/com.aure.banjorecomp/files/banjo.log`.
 - The native runtime always reads and writes its active save mirror under `files/data/saves/`.
 - Save Management can synchronize that mirror with a user-selected DocumentsUI folder. This uses a persisted `content://` tree permission, not a raw shared-storage filesystem path.
 - RecompFrontend `get_program_path()` uses `APP_PROGRAM_PATH`, falling back to SDL internal storage only as an Android safety net.
