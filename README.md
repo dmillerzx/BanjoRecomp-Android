@@ -54,6 +54,7 @@
 - **Turnip GPU Driver Loader**: Built-in AdrenoTools driver loader supporting Mesa Turnip drivers (e.g. Turnip v24.3.0 R9v2) for enhanced Vulkan stability.
 - **ROM Setup (Auto-Scan or In-App Picker)**: You can **either** place your **Banjo-Kazooie (USA) v1.0** `.z64` (`Banjo-Kazooie (USA).z64` or `banjo.z64`) in `<MicroSD>/ROMs/n64/` or `Android/data/com.aure.banjorecomp/files/` for automatic zero-touch hydration on launch, **or** select any `.z64`, `.n64`, `.v64`, or `.zip` manually via the **in-app Android file picker** on first launch.
 - **Diagnostics & Logs**: Boot, ROM validation, and GPU driver logs are written to `Android/data/com.aure.banjorecomp/files/banjo.log`. Unsupported revisions (e.g. Rev A / v1.1) and invalid files display a clear explanation dialog rather than failing silently.
+- **Obtainium Auto-Updates**: Add `https://github.com/dmillerzx/BanjoRecomp-Android` in Obtainium with APK filter `BanjoRecompiled-v.*-Android-ARM64\.apk$` to receive automatic updates.
 - *(Note: Upstream project was originally developed and tested on the dual-screen AYN Thor).*
 
 ### Android save management
